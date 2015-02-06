@@ -20,13 +20,32 @@ end
 
 class BelongsToOptions < AssocOptions
   def initialize(name, options = {})
-    # ...
+    defaults = {
+      :class_name => name.capitalize,
+      :foreign_key => "#{name}_id".to_sym,
+      :primary_key => :id
+    }
+
+    options = defaults.merge(options)
+
+    @class_name = options[:class_name]
+    @foreign_key = options[:foreign_key]
+    @primary_key = options[:primary_key]
   end
 end
 
 class HasManyOptions < AssocOptions
   def initialize(name, self_class_name, options = {})
-    # ...
+
+    defaults = {
+      :class_name => name.singularize.camelcase,
+      :foreign_key => (self_class_name.underscore + "_id").to_sym,
+      :primary_key => :id
+    }
+    options = defaults.merge(options)
+    @primary_key = options[:primary_key]
+    @foreign_key = options[:foreign_key]
+    @class_name = options[:class_name]
   end
 end
 
