@@ -43,15 +43,36 @@ class SQLObject
   end
 
   def self.all
-    # ...
+    collection = DBConnection.execute(<<-SQL)
+      SELECT
+        #{self.to_s.tableize}.*
+      FROM
+        #{self.to_s.tableize}
+    SQL
+
+
+    self.parse_all(collection)
   end
 
   def self.parse_all(results)
-    # ...
+    array = []
+    results.each do |result|
+      array << self.new(result)
+    end
+    array
   end
 
   def self.find(id)
-    # ...
+    single_item = DBConnection.execute(<<-SQL, id)
+      SELECT
+        #{self.to_s.tableize}.*
+      FROM
+        #{self.to_s.tableize}
+      WHERE
+        id = ?
+    SQL
+    return nil if single_item.empty?
+    self.new(single_item[0])
   end
 
   def initialize(params = {})
@@ -71,11 +92,26 @@ class SQLObject
   end
 
   def attribute_values
+    #self.column
     self.attributes.values
   end
 
   def insert
-    # ...
+    col_names = self.class.columns[1..-1].join(",")
+
+    n = attribute_values.length
+
+    question_marks = (["?"] * n).join(",")
+
+    DBConnection.execute(<<-SQL, *attribute_values)
+      INSERT INTO
+        #{self.class.to_s.tableize} (#{col_names})
+      VALUES
+        (#{question_marks})
+    SQL
+    id = DBConnection.last_insert_row_id
+    self.id = id
+
   end
 
   def update
