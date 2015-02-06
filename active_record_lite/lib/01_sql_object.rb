@@ -6,10 +6,30 @@ require 'active_support/inflector'
 class SQLObject
 
   def self.columns
-    
+
+    cols = DBConnection.execute2(<<-SQL)
+      SELECT
+        *
+      FROM
+        "#{self.table_name}"
+    SQL
+
+    cols[0].map(&:to_sym)
   end
 
   def self.finalize!
+    self.columns.each do |column|
+
+      col = column.to_s
+
+      define_method(col+"=") do |arg|
+        self.attributes[column] = arg
+      end
+
+      define_method(col) do
+        self.attributes[column]
+      end
+    end
   end
 
   def self.table_name=(table_name)
@@ -19,6 +39,7 @@ class SQLObject
 
   def self.table_name
     @table_name ||= self.to_s.tableize
+
   end
 
   def self.all
@@ -38,11 +59,11 @@ class SQLObject
   end
 
   def attributes
-    # ...
+    @attributes ||= {}
   end
 
   def attribute_values
-    # ...
+    self.attributes.values
   end
 
   def insert
