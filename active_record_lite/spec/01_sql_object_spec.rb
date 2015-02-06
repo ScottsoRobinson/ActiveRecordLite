@@ -23,6 +23,7 @@ describe SQLObject do
     end
 
     it '::table_name generates default name' do
+      puts SQLObject.instance_variables
       expect(Cat.table_name).to eq('cats')
     end
   end
