@@ -45,9 +45,9 @@ class SQLObject
   def self.all
     collection = DBConnection.execute(<<-SQL)
       SELECT
-        #{self.to_s.tableize}.*
+        #{self.table_name}.*
       FROM
-        #{self.to_s.tableize}
+        #{self.table_name}
     SQL
 
 
@@ -65,9 +65,9 @@ class SQLObject
   def self.find(id)
     single_item = DBConnection.execute(<<-SQL, id)
       SELECT
-        #{self.to_s.tableize}.*
+        #{self.table_name}.*
       FROM
-        #{self.to_s.tableize}
+        #{self.table_name}
       WHERE
         id = ?
     SQL
@@ -115,10 +115,24 @@ class SQLObject
   end
 
   def update
-    # ...
+    col_names = self.class.columns
+    col_names_string = col_names.map{|el| "#{el} = ?"}.join(",")
+
+    DBConnection.execute(<<-SQL, self.attribute_values, id)
+      UPDATE
+      #{self.class.table_name}
+      SET
+      #{col_names_string}
+      WHERE
+        id = ?
+    SQL
   end
 
   def save
-    # ...
+    if self.id.nil?
+      insert
+    else
+      update
+    end
   end
 end
