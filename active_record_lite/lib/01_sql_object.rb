@@ -92,7 +92,7 @@ class SQLObject
   end
 
   def attribute_values
-    #self.column
+  
     self.attributes.values
   end
 
