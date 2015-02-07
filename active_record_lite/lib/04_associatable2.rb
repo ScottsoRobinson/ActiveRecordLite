@@ -35,8 +35,6 @@ module Associatable
 
       source_options.model_class.parse_all(results).first
     end
-=======
-    # ...
->>>>>>> 407a7d3b36bfcbcb3f50884eb85d8fc59f7c9b58
+
   end
 end
