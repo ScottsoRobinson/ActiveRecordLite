@@ -72,17 +72,19 @@ class SQLObject
         id = ?
     SQL
     return nil if single_item.empty?
-    self.new(single_item[0])
+    parse_all(single_item).first
   end
 
   def initialize(params = {})
 
     params.each do |param, val|
-      unless self.class.columns.include?(param.to_sym)
+      if self.class.columns.include?(param.to_sym)
+        self.send("#{param.to_s}=", val)
+      else
         raise StandardError.new "unknown attribute '#{param}'"
       end
 
-      self.send("#{param.to_s}=", val)
+      #self.send("#{param.to_s}=", val)
 
     end
   end
@@ -92,7 +94,7 @@ class SQLObject
   end
 
   def attribute_values
-  
+
     self.attributes.values
   end
 
