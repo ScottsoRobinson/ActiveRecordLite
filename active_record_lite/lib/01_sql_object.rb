@@ -72,12 +72,17 @@ class SQLObject
         id = ?
     SQL
     return nil if single_item.empty?
+<<<<<<< HEAD
     parse_all(single_item).first
+=======
+    self.new(single_item[0])
+>>>>>>> 407a7d3b36bfcbcb3f50884eb85d8fc59f7c9b58
   end
 
   def initialize(params = {})
 
     params.each do |param, val|
+<<<<<<< HEAD
       if self.class.columns.include?(param.to_sym)
         self.send("#{param.to_s}=", val)
       else
@@ -85,6 +90,13 @@ class SQLObject
       end
 
       #self.send("#{param.to_s}=", val)
+=======
+      unless self.class.columns.include?(param.to_sym)
+        raise StandardError.new "unknown attribute '#{param}'"
+      end
+
+      self.send("#{param.to_s}=", val)
+>>>>>>> 407a7d3b36bfcbcb3f50884eb85d8fc59f7c9b58
 
     end
   end
@@ -94,7 +106,11 @@ class SQLObject
   end
 
   def attribute_values
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 407a7d3b36bfcbcb3f50884eb85d8fc59f7c9b58
     self.attributes.values
   end
 

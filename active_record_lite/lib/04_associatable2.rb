@@ -5,6 +5,7 @@ module Associatable
   # Remember to go back to 04_associatable to write ::assoc_options
 
   def has_one_through(name, through_name, source_name)
+<<<<<<< HEAD
     define_method(name) do
       through_options = self.class.assoc_options[through_name]
       source_options =
@@ -34,5 +35,8 @@ module Associatable
 
       source_options.model_class.parse_all(results).first
     end
+=======
+    # ...
+>>>>>>> 407a7d3b36bfcbcb3f50884eb85d8fc59f7c9b58
   end
 end
